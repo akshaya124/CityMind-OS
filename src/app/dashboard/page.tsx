@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { LayoutDashboard, TrendingUp, AlertTriangle, CheckCircle, BarChart3, Users, Building, Sprout, MapPin } from "lucide-react";
+import { LayoutDashboard, TrendingUp, AlertTriangle, CheckCircle, BarChart3, Users, Building, Sprout, MapPin, BrainCircuit } from "lucide-react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
