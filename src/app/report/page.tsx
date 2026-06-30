@@ -57,7 +57,6 @@ export default function ReportIssue() {
     
     recognition.start();
   };
-  const [submissionPhase, setSubmissionPhase] = useState("");
   const [gatekeeperError, setGatekeeperError] = useState<string | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
