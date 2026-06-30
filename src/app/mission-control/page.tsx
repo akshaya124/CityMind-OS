@@ -110,13 +110,13 @@ export default function MissionControl() {
     if (missionComplete && briefingText && !briefingText.startsWith("API Error:") && issueId && issueId !== "demo-fallback") {
       const saveAiData = async () => {
         try {
-          const score = stagesData.find(s => s.stage === "commander")?.data?.priorityScore || 85;
-          const budget = stagesData.find(s => s.stage === "planner")?.data?.estimatedBudget || "Unknown";
-          const priority = stagesData.find(s => s.stage === "commander")?.data?.riskLevel || "High";
+          const score = agentContext?.commander?.priorityScore || 85;
+          const budget = agentContext?.planner?.estimatedBudget ? `₹${agentContext.planner.estimatedBudget}` : "Unknown";
+          const priority = agentContext?.commander?.riskLevel || "High";
           
           await updateDoc(doc(db, "issues", issueId), {
             aiBriefing: briefingText,
-            aiStages: stagesData,
+            aiStages: agentContext, // Save raw context for potential future use
             score: score,
             budget: budget,
             priority: priority,
@@ -128,7 +128,7 @@ export default function MissionControl() {
       };
       saveAiData();
     }
-  }, [missionComplete, briefingText, issueId, stagesData]);
+  }, [missionComplete, briefingText, issueId, agentContext]);
 
   const formatStageData = (stageName: string, data: any): StageData => {
     switch (stageName) {
