@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { BrainCircuit, Activity, ShieldAlert, ArrowRight, Type } from "lucide-react";
@@ -10,7 +10,7 @@ import { doc, updateDoc } from "firebase/firestore";
 
 const STAGE_NAMES = ["scout", "analyst", "commander", "planner", "guardian"];
 
-export default function MissionControl() {
+function MissionControlContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const issueId = searchParams.get('issueId');
@@ -349,6 +349,14 @@ export default function MissionControl() {
         </AnimatePresence>
       </main>
     </div>
+  );
+}
+
+export default function MissionControl() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex flex-col items-center justify-center text-blue-400 font-mono animate-pulse">Initializing Mission Control...</div>}>
+      <MissionControlContent />
+    </Suspense>
   );
 }
 
