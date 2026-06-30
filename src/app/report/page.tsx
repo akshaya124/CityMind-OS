@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { UploadCloud, Camera, MapPin, BrainCircuit, X, Image as ImageIcon, Crosshair, ShieldAlert } from "lucide-react";
+import { UploadCloud, Camera, MapPin, BrainCircuit, X, Image as ImageIcon, Crosshair, ShieldAlert, Mic } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { db, storage } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
@@ -23,6 +23,40 @@ export default function ReportIssue() {
   const [locationName, setLocationName] = useState("Searching for location...");
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [submissionPhase, setSubmissionPhase] = useState("");
+
+  const startVoiceRecording = () => {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      alert("Voice reporting is not supported in this browser. Please use Chrome or Safari.");
+      return;
+    }
+    
+    // @ts-ignore
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    
+    recognition.onstart = () => setIsRecording(true);
+    
+    recognition.onresult = (event: any) => {
+      const transcript = Array.from(event.results)
+        .map((result: any) => result[0])
+        .map((result) => result.transcript)
+        .join('');
+      setDescription(transcript);
+    };
+    
+    recognition.onerror = (event: any) => {
+      console.error(event.error);
+      setIsRecording(false);
+    };
+    
+    recognition.onend = () => setIsRecording(false);
+    
+    recognition.start();
+  };
   const [submissionPhase, setSubmissionPhase] = useState("");
   const [gatekeeperError, setGatekeeperError] = useState<string | null>(null);
   
@@ -309,7 +343,17 @@ export default function ReportIssue() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2">Description <span className="text-white/20 lowercase normal-case font-normal">(Optional)</span></label>
+                <label className="block text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center justify-between">
+                  <span>Description <span className="text-white/20 lowercase normal-case font-normal">(Optional)</span></span>
+                  <button 
+                    type="button" 
+                    onClick={startVoiceRecording}
+                    className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-colors border ${isRecording ? 'bg-red-500/20 text-red-400 border-red-500/50 animate-pulse' : 'bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20'}`}
+                  >
+                    <Mic className="w-3 h-3" />
+                    {isRecording ? "Listening..." : "Use Voice"}
+                  </button>
+                </label>
                 <textarea 
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}

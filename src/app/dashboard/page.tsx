@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { LayoutDashboard, TrendingUp, AlertTriangle, CheckCircle, BarChart3, Users, Building, Sprout, MapPin, BrainCircuit } from "lucide-react";
+import { LayoutDashboard, TrendingUp, AlertTriangle, CheckCircle, BarChart3, Users, Building, Sprout, MapPin, BrainCircuit, Trophy, Medal, Star } from "lucide-react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
@@ -169,6 +169,46 @@ export default function Dashboard() {
             </div>
           </motion.div>
         </div>
+        </div>
+
+        {/* Gamification / Civic Karma */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mt-8 glass rounded-3xl border border-white/5 p-6"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-bold flex items-center gap-2">
+              <Trophy className="w-6 h-6 text-yellow-500" /> Civic Karma Leaderboard
+            </h3>
+            <span className="text-sm font-medium text-muted-foreground bg-white/5 px-3 py-1 rounded-full border border-white/5">
+              Current Month
+            </span>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-4">
+            {[
+              { rank: 1, name: "Sarah J.", points: "2,450", role: "Super Citizen", icon: Trophy, color: "text-yellow-500", bg: "bg-yellow-500/10" },
+              { rank: 2, name: "David M.", points: "1,820", role: "Active Watcher", icon: Medal, color: "text-slate-300", bg: "bg-slate-300/10" },
+              { rank: 3, name: "Elena R.", points: "1,150", role: "Contributor", icon: Star, color: "text-amber-600", bg: "bg-amber-600/10" },
+            ].map((user) => (
+              <div key={user.rank} className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
+                <div className={`w-10 h-10 rounded-xl ${user.bg} flex items-center justify-center`}>
+                  <user.icon className={`w-5 h-5 ${user.color}`} />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-bold text-white leading-tight">{user.name}</h4>
+                  <p className="text-xs text-muted-foreground">{user.role}</p>
+                </div>
+                <div className="text-right">
+                  <span className="font-mono text-emerald-400 font-bold block">{user.points}</span>
+                  <span className="text-[10px] text-muted-foreground uppercase font-bold">Karma</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </div>
   );
