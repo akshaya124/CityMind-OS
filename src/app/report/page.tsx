@@ -49,7 +49,11 @@ export default function ReportIssue() {
     };
     
     recognition.onerror = (event: any) => {
-      console.error(event.error);
+      if (event.error === 'not-allowed') {
+        alert("Microphone access was denied. Please allow microphone access in your browser settings to use voice reporting.");
+      } else if (event.error !== 'aborted') {
+        console.log("Voice recognition stopped:", event.error);
+      }
       setIsRecording(false);
     };
     
